@@ -10,7 +10,19 @@ mongoose.connect("mongodb+srv://jisnab01:jisnab01@cluster0.tnvz6eq.mongodb.net/r
 
 app.get("/test",(req,res)=>{res.json({"status":"success"})})
 
+app.post("/adminSignin",(req,res)=>{
 
+    let input=req.body
+    if (input.username=="admin" && input.password=="12345") 
+        {
+
+      res.json({"status":"success"})
+    } else {
+
+        res.json({"status":"Invalid credentials"})
+        
+    }
+})
 
 
 app.post("/adminSignUp",(req,res)=>{
