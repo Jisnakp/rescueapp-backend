@@ -1,6 +1,7 @@
 const express=require("express")
 const mongoose=require("mongoose")
 const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
 const cors=require("cors")
 const loginModel = require("./admin")
 const app=express()
@@ -13,15 +14,39 @@ app.get("/test",(req,res)=>{res.json({"status":"success"})})
 app.post("/adminSignin",(req,res)=>{
 
     let input=req.body
-    if (input.username=="admin" && input.password=="12345") 
-        {
+    let result=loginModel.find({username:input.username}).then(
+        (response)=>{
+            if (response.length>0) {
 
-      res.json({"status":"success"})
-    } else {
+                const validator=bcrypt.compareSync(input.password,response[0].password)
+                if (validator) {
+                    
+                    jwt.sign({email:input.username},"rescue-app",{expiresIn:"3d"},
 
-        res.json({"status":"Invalid credentials"})
-        
-    }
+                        (error,token)=>{
+                            if (error) {
+
+                                res.json({"status":"Invalid Authentication"})
+                                
+                            } else {
+                                res.json({"status":"success","token":token})
+                                
+                            }
+                        }
+                    )
+
+
+
+                } else {
+                    res.json({"status":"Invalid Password"})
+                }
+                
+            } else {
+                res.json({"status":"Invalid Username"})
+                
+            }
+        }
+    ).catch()
 })
 
 
