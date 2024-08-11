@@ -2,8 +2,8 @@ const mongoose=require("mongoose")
 const LoginSchema=mongoose.Schema(
 
     {
-        username:String,
-        password:String
+        username:{type:String},
+        password:{type:String}
     }
 )
 const loginModel=mongoose.model("logindata",LoginSchema)
